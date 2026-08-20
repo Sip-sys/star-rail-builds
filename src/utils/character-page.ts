@@ -15,7 +15,6 @@ import {
 import { getLocale, t } from './i18n';
 import { collectNotes, collectSectionNotes, collectStatNotes } from './notes';
 import { TranslationHelper } from './translator';
-import type { WeaponPassiveText } from './weapon-passive';
 
 type CharacterPathParam = string | string[] | undefined;
 
@@ -441,7 +440,7 @@ function translateArtifactSetRecommendations(
 /**
  * Translates one talent priority item while preserving legacy display strings.
  */
-function translateTalentItem(
+function translateTraceItem(
     translator: TranslationHelper,
     item: any,
     sourceFile: string,
@@ -480,19 +479,27 @@ function getArtifactSetNoteGroups(artifactSets: any) {
 /**
  * Translates every talent priority group for a build.
  */
-function translateTalentPriorities(
-    talents: any,
+function translateTracePriorities(
+    traces: any,
     translator: TranslationHelper,
     sourceFile: string,
 ) {
     return {
-        ...talents,
-        talents: talents.talents.map((priority: { items: any[] }) => ({
-            ...priority,
-            items: priority.items.map((item) =>
-                translateTalentItem(translator, item, sourceFile),
-            ),
-        })),
+        ...traces,
+
+        traces: traces.traces.map(
+            (priority: { items: any[] }) => ({
+                ...priority,
+
+                items: priority.items.map((item) =>
+                    translateTraceItem(
+                        translator,
+                        item,
+                        sourceFile,
+                    ),
+                ),
+            }),
+        ),
     };
 }
 
@@ -593,6 +600,13 @@ function buildLocalizedNotes(
         artifacts: localizeCreditDetails(buildNoteData.artifacts),
         weapons: localizeCreditDetails(buildNoteData.weapons),
         talent: localizeCreditDetails(buildNoteData.talent),
+        trace: localizeCreditDetails(
+            buildNoteData.trace,
+        ),
+
+        traces: localizeCreditDetails(
+            buildNoteData.traces,
+        ),
         talents: localizeCreditDetails(buildNoteData.talents),
         global: localizeCreditDetails(buildNoteData.global),
         notes: notes.map((note) => {
@@ -639,7 +653,8 @@ function loadBuildData({
         buildPath,
         'artifacts-substats.json',
     );
-    const talentsFile = fileInBuild(buildPath, 'talents.json');
+    const tracesFile =
+        fileInBuild(buildPath, 'traces.json');
     const buildNotesFile = fileInBuild(buildPath, 'build-notes.json');
 
     const rawWeapons = loadJSON(buildPath, 'light-cones.json');
@@ -691,11 +706,16 @@ function loadBuildData({
             );
     }
 
-    const rawTalents = loadJSON(buildPath, 'talents.json');
-    const talents = rawTalents
-        ? translateTalentPriorities(rawTalents, translator, talentsFile)
-        : null;
+    const rawTraces =
+        loadJSON(buildPath, 'traces.json');
 
+    const traces = rawTraces
+        ? translateTracePriorities(
+            rawTraces,
+            translator,
+            tracesFile,
+        )
+        : null;
     const notes = {
         weapons: {
             global: collectSectionNotes(weapons, weaponsFile, lang, translator),
@@ -759,12 +779,18 @@ function loadBuildData({
                 )
                 : [],
         },
-        talents: {
-            global: collectSectionNotes(talents, talentsFile, lang, translator),
+        traces: {
+            global: collectSectionNotes(
+                traces,
+                tracesFile,
+                lang,
+                translator,
+            ),
+
             items: collectNotes(
-                talents?.talents ?? [],
-                (talent: { name: any }) => talent.name,
-                talentsFile,
+                traces?.traces ?? [],
+                (trace: { name: any }) => trace.name,
+                tracesFile,
                 lang,
                 translator,
             ),
@@ -782,7 +808,7 @@ function loadBuildData({
         slug: buildName,
         weapons,
         artifacts,
-        talents,
+        traces,
         notes,
         buildNote: buildLocalizedNotes(
             buildNoteData,

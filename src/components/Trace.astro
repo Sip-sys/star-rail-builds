@@ -2,54 +2,68 @@
 import { t } from '../utils/i18n';
 import InlineNoteLabel from './InlineNoteLabel.astro';
 
-type TalentItem = {
+type TraceItem = {
   name: string;
   note?: string;
   noteId?: string;
 };
 
-type TalentPriority = {
-  items: TalentItem[];
+type TracePriority = {
+  items: TraceItem[];
   approx?: boolean;
 };
 
-type TalentRecommendations = {
-  talents: TalentPriority[];
+type TraceRecommendations = {
+  traces: TracePriority[];
 };
 
-const { talents, locale } = Astro.props as {
-  talents: TalentRecommendations;
+const { traces, locale } = Astro.props as {
+  traces: TraceRecommendations;
   locale: any;
 };
 
-const hasNoteMarker = (item: TalentItem) => item.noteId || item.note;
-const talentRows = talents.talents.map(
-  (talent: TalentPriority, index: number) => ({
+const hasNoteMarker = (item: TraceItem) =>
+  item.noteId || item.note;
+
+const traceRows = traces.traces.map(
+  (trace: TracePriority, index: number) => ({
     rank: index + 1,
-    mainItems: talent.approx ? talent.items.slice(0, 1) : talent.items,
-    alternativeItems: talent.approx ? talent.items.slice(1) : [],
+
+    mainItems: trace.approx
+      ? trace.items.slice(0, 1)
+      : trace.items,
+
+    alternativeItems: trace.approx
+      ? trace.items.slice(1)
+      : [],
   }),
 );
 ---
 
 <div class="card recommendation-card talent-card">
-  <h2>{t(locale, 'ui', 'Talents')}</h2>
+  <h2>{t(locale, 'ui', 'Traces')}</h2>
 
   <div class="recommendation-card-body">
     <div class="rank-list">
       {
-        talentRows.map((talent) => (
+        traceRows.map((trace) => (
           <div class="rank-group">
             <div class="rank-row">
-              <strong class="rank-number">{talent.rank}</strong>
+              <strong class="rank-number">
+                {trace.rank}
+              </strong>
+
               <span class="rank-content">
-                {talent.mainItems.map((item, itemIndex) => (
+                {trace.mainItems.map((item, itemIndex) => (
                   <>
                     {itemIndex > 0 && ' = '}
+
                     <InlineNoteLabel
                       label={item.name}
                       noteId={item.noteId}
-                      hasNote={Boolean(hasNoteMarker(item))}
+                      hasNote={Boolean(
+                        hasNoteMarker(item)
+                      )}
                       emphasized
                     />
                   </>
@@ -57,14 +71,19 @@ const talentRows = talents.talents.map(
               </span>
             </div>
 
-            {talent.alternativeItems.map((item) => (
+            {trace.alternativeItems.map((item) => (
               <div class="rank-row alt">
-                <span class="rank-approx">&asymp;</span>
+                <span class="rank-approx">
+                  &asymp;
+                </span>
+
                 <span class="rank-content">
                   <InlineNoteLabel
                     label={item.name}
                     noteId={item.noteId}
-                    hasNote={Boolean(hasNoteMarker(item))}
+                    hasNote={Boolean(
+                      hasNoteMarker(item)
+                    )}
                     emphasized
                   />
                 </span>

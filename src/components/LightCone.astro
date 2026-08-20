@@ -6,7 +6,6 @@ import type {
     LightConePassiveText,
     LightConePassiveValue,
 } from '../utils/light-cone-passive';
-import { isFreeWeaponSource } from '../utils/weapon-source';
 
 type WeaponItem = {
     id?: string;
@@ -16,6 +15,7 @@ type WeaponItem = {
     info?: {
         rarity: number;
         source?: string;
+        free?: boolean;
 
         passive?: LightConePassiveText;
 
@@ -73,8 +73,8 @@ const formatSuperimposition = (superimposition?: number | string) =>
     superimposition ? ` [S${superimposition}]` : '';
 
 const hasNoteMarker = (item: WeaponItem) => item.noteId || item.note;
-const isFreeWeapon = (item: WeaponItem) =>
-    isFreeWeaponSource(item.info?.source) || item.rarity <= 3;
+const isFreeLightCone = (item: WeaponItem) =>
+    item.info?.free === true || item.rarity <= 3;
 const conditionalWeapons = weapons.conditional ?? [];
 const rankedWeaponGroups = weapons.weapons.map(
     (position: WeaponRank, index: number) => ({
@@ -86,9 +86,9 @@ const rankedWeaponGroups = weapons.weapons.map(
 const hasFreeWeapon =
     rankedWeaponGroups.some(
         (position) =>
-            Boolean(position.mainItem && isFreeWeapon(position.mainItem)) ||
-            position.alternativeItems.some((weapon) => isFreeWeapon(weapon)),
-    ) || conditionalWeapons.some((weapon) => isFreeWeapon(weapon));
+            Boolean(position.mainItem && isFreeLightCone(position.mainItem)) ||
+            position.alternativeItems.some((weapon) => isFreeLightCone(weapon)),
+    ) || conditionalWeapons.some((weapon) => isFreeLightCone(weapon));
 ---
 
 <div class="card recommendation-card weapon-card">
@@ -114,7 +114,7 @@ const hasFreeWeapon =
             {
                 rankedWeaponGroups.map((position) => {
                     const mainItem = position.mainItem;
-                    const mainItemIsFree = mainItem && isFreeWeapon(mainItem);
+                    const mainItemIsFree = mainItem && isFreeLightCone(mainItem);
 
                     return (
                         <div class="rank-group">
@@ -154,7 +154,7 @@ const hasFreeWeapon =
                             )}
 
                             {position.alternativeItems.map((weapon) => {
-                                const isFree = isFreeWeapon(weapon);
+                                const isFree = isFreeLightCone(weapon);
 
                                 return (
                                     <div
@@ -207,7 +207,7 @@ const hasFreeWeapon =
 
                     <div class="rank-list">
                         {conditionalWeapons.map((weapon: WeaponItem) => {
-                            const isFree = isFreeWeapon(weapon);
+                            const isFree = isFreeLightCone(weapon);
 
                             return (
                                 <div
