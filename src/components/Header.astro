@@ -38,10 +38,12 @@ const primaryLinks = [
     isCurrent: !page,
   },
   {
-    href: localizedPath(currentLang, 'weapons'),
-    label: t(locale, 'ui', 'Weapons', undefined, false) || 'Weapons',
-    isCurrent: page === 'weapons',
-  },
+    href: localizedPath(currentLang, 'light-cones'),
+    label:
+        t(locale, 'ui', 'Light Cones', undefined, false) ||
+        'Light Cones',
+    isCurrent: page === 'light-cones',
+    },
   {
     href: localizedPath(currentLang, 'artifacts'),
     label:
@@ -72,11 +74,11 @@ const isInfoCurrent = infoLinks.some((link) => link.isCurrent);
 <header class="site-header">
   <div class="navbar">
     <a
-      href={localizedPath(currentLang)}
-      class="logo-link"
-      aria-label="Genshin Builds home"
+    href={localizedPath(currentLang)}
+    class="logo-link"
+    aria-label="Star Rail Builds home"
     >
-      <span>Genshin Builds</span>
+    <span>Star Rail Builds</span>
     </a>
 
     <div class="nav-panel" id="primary-navigation">

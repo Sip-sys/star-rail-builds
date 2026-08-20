@@ -1,10 +1,16 @@
 import { compareCharacterCards } from './character-sort.mjs';
 
-type FilterKind = 'character' | 'weapon' | 'artifact';
+type FilterKind =
+    | 'character'
+    | 'weapon'
+    | 'artifact'
+    | 'lightCone';
+    
 const sortStorageKeys = {
     character: 'genshin-builds:character-sort',
     weapon: 'genshin-builds:weapon-sort',
     artifact: 'genshin-builds:artifact-sort',
+    lightCone: 'star-rail-builds:light-cone-sort',
 } as const;
 const highPriorityImageCount = 4;
 
@@ -15,17 +21,26 @@ const selectors = {
         count: '[data-character-count]',
         empty: '[data-character-empty]',
     },
+
     weapon: {
         form: '[data-weapon-filters]',
         card: '[data-weapon-card]',
         count: '[data-weapon-count]',
         empty: '[data-weapon-empty]',
     },
+
     artifact: {
         form: '[data-artifact-filters]',
         card: '[data-artifact-card]',
         count: '[data-artifact-count]',
         empty: '[data-artifact-empty]',
+    },
+
+    lightCone: {
+        form: '[data-light-cone-filters]',
+        card: '[data-light-cone-card]',
+        count: '[data-light-cone-count]',
+        empty: '[data-light-cone-empty]',
     },
 } as const;
 
@@ -202,5 +217,52 @@ document
             .querySelectorAll<HTMLElement>('[data-weapon-refinement-panel]')
             .forEach((panel) => {
                 panel.hidden = panel.dataset.weaponRefinementPanel !== refinement;
+            });
+    });
+
+    document
+    .querySelector<HTMLElement>('[data-light-cone-browser]')
+    ?.addEventListener('click', (event) => {
+        const button =
+            event.target instanceof Element
+                ? event.target.closest<HTMLButtonElement>(
+                      '[data-light-cone-superimposition]',
+                  )
+                : null;
+
+        const superimposition =
+            button?.dataset.lightConeSuperimposition;
+
+        const card = button?.closest<HTMLElement>(
+            '[data-light-cone-card]',
+        );
+
+        if (!button || !superimposition || !card) {
+            return;
+        }
+
+        card
+            .querySelectorAll<HTMLElement>(
+                '[data-light-cone-superimposition]',
+            )
+            .forEach((item) => {
+                item.setAttribute(
+                    'aria-pressed',
+                    String(
+                        item.dataset.lightConeSuperimposition ===
+                            superimposition,
+                    ),
+                );
+            });
+
+        card
+            .querySelectorAll<HTMLElement>(
+                '[data-light-cone-superimposition-panel]',
+            )
+            .forEach((panel) => {
+                panel.hidden =
+                    panel.dataset
+                        .lightConeSuperimpositionPanel !==
+                    superimposition;
             });
     });
