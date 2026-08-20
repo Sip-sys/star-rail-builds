@@ -24,12 +24,12 @@
             20,
             40
         ],
-        "level\_1": {
+        "level_1": {
             "hp": 48,
             "atk": 24,
             "def": 15
         },
-        "level\_max": {
+        "level_max": {
             "hp": 1058,
             "atk": 529,
             "def": 330
@@ -61,12 +61,12 @@
             40,
             40
         ],
-        "level\_1": {
+        "level_1": {
             "hp": 48,
             "atk": 21,
             "def": 12
         },
-        "level\_max": {
+        "level_max": {
             "hp": 1058,
             "atk": 476,
             "def": 264
@@ -103,12 +103,12 @@
             80,
             80
         ],
-        "level\_1": {
+        "level_1": {
             "hp": 43,
             "atk": 26,
             "def": 24
         },
-        "level\_max": {
+        "level_max": {
             "hp": 952,
             "atk": 582,
             "def": 529
@@ -145,12 +145,12 @@
             30,
             10
         ],
-        "level\_1": {
+        "level_1": {
             "hp": 48,
             "atk": 28,
             "def": 18
         },
-        "level\_max": {
+        "level_max": {
             "hp": 1058,
             "atk": 635,
             "def": 396
@@ -177,12 +177,12 @@
         "s5": [
             40
         ],
-        "level\_1": {
+        "level_1": {
             "hp": 38,
             "atk": 16,
             "def": 9
         },
-        "level\_max": {
+        "level_max": {
             "hp": 846,
             "atk": 370,
             "def": 198
@@ -214,12 +214,12 @@
             60,
             60
         ],
-        "level\_1": {
+        "level_1": {
             "hp": 48,
             "atk": 26,
             "def": 21
         },
-        "level\_max": {
+        "level_max": {
             "hp": 1058,
             "atk": 582,
             "def": 463
@@ -266,12 +266,12 @@
             50,
             50
         ],
-        "level\_1": {
+        "level_1": {
             "hp": 62,
             "atk": 21,
             "def": 18
         },
-        "level\_max": {
+        "level_max": {
             "hp": 1375,
             "atk": 476,
             "def": 396
@@ -298,12 +298,12 @@
         "s5": [
             50
         ],
-        "level\_1": {
+        "level_1": {
             "hp": 48,
             "atk": 21,
             "def": 12
         },
-        "level\_max": {
+        "level_max": {
             "hp": 1058,
             "atk": 476,
             "def": 264
@@ -350,12 +350,12 @@
             144,
             48
         ],
-        "level\_1": {
+        "level_1": {
             "hp": 43,
             "atk": 28,
             "def": 21
         },
-        "level\_max": {
+        "level_max": {
             "hp": 952,
             "atk": 635,
             "def": 463
@@ -392,12 +392,12 @@
             24,
             20
         ],
-        "level\_1": {
+        "level_1": {
             "hp": 52,
             "atk": 26,
             "def": 18
         },
-        "level\_max": {
+        "level_max": {
             "hp": 1164,
             "atk": 582,
             "def": 396
@@ -429,12 +429,12 @@
             56,
             30
         ],
-        "level\_1": {
+        "level_1": {
             "hp": 43,
             "atk": 21,
             "def": 15
         },
-        "level\_max": {
+        "level_max": {
             "hp": 952,
             "atk": 476,
             "def": 330
@@ -461,12 +461,12 @@
         "s5": [
             24
         ],
-        "level\_1": {
+        "level_1": {
             "hp": 38,
             "atk": 16,
             "def": 9
         },
-        "level\_max": {
+        "level_max": {
             "hp": 846,
             "atk": 370,
             "def": 198
@@ -498,12 +498,12 @@
             24,
             36
         ],
-        "level\_1": {
+        "level_1": {
             "hp": 48,
             "atk": 21,
             "def": 12
         },
-        "level\_max": {
+        "level_max": {
             "hp": 1058,
             "atk": 476,
             "def": 264
@@ -535,12 +535,12 @@
             48,
             24
         ],
-        "level\_1": {
+        "level_1": {
             "hp": 43,
             "atk": 24,
             "def": 12
         },
-        "level\_max": {
+        "level_max": {
             "hp": 952,
             "atk": 529,
             "def": 264
@@ -572,12 +572,12 @@
             16,
             24
         ],
-        "level\_1": {
+        "level_1": {
             "hp": 48,
             "atk": 24,
             "def": 18
         },
-        "level\_max": {
+        "level_max": {
             "hp": 1058,
             "atk": 529,
             "def": 396
@@ -604,12 +604,12 @@
         "s5": [
             40
         ],
-        "level\_1": {
+        "level_1": {
             "hp": 38,
             "atk": 16,
             "def": 9
         },
-        "level\_max": {
+        "level_max": {
             "hp": 846,
             "atk": 370,
             "def": 198
@@ -646,12 +646,12 @@
             12,
             40
         ],
-        "level\_1": {
+        "level_1": {
             "hp": 52,
             "atk": 26,
             "def": 18
         },
-        "level\_max": {
+        "level_max": {
             "hp": 1164,
             "atk": 582,
             "def": 396
@@ -678,12 +678,12 @@
         "s5": [
             24
         ],
-        "level\_1": {
+        "level_1": {
             "hp": 48,
             "atk": 21,
             "def": 12
         },
-        "level\_max": {
+        "level_max": {
             "hp": 1058,
             "atk": 476,
             "def": 264
@@ -720,12 +720,12 @@
             30,
             40
         ],
-        "level\_1": {
+        "level_1": {
             "hp": 57,
             "atk": 26,
             "def": 15
         },
-        "level\_max": {
+        "level_max": {
             "hp": 1270,
             "atk": 582,
             "def": 330
@@ -762,12 +762,12 @@
             36,
             132
         ],
-        "level\_1": {
+        "level_1": {
             "hp": 43,
             "atk": 31,
             "def": 18
         },
-        "level\_max": {
+        "level_max": {
             "hp": 952,
             "atk": 687,
             "def": 396
@@ -799,12 +799,12 @@
             32,
             24
         ],
-        "level\_1": {
+        "level_1": {
             "hp": 43,
             "atk": 21,
             "def": 15
         },
-        "level\_max": {
+        "level_max": {
             "hp": 952,
             "atk": 476,
             "def": 330
@@ -836,12 +836,12 @@
             100,
             40
         ],
-        "level\_1": {
+        "level_1": {
             "hp": 52,
             "atk": 21,
             "def": 24
         },
-        "level\_max": {
+        "level_max": {
             "hp": 1164,
             "atk": 476,
             "def": 529
@@ -873,12 +873,12 @@
             20,
             32
         ],
-        "level\_1": {
+        "level_1": {
             "hp": 43,
             "atk": 21,
             "def": 15
         },
-        "level\_max": {
+        "level_max": {
             "hp": 952,
             "atk": 476,
             "def": 330
