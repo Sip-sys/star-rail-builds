@@ -1,0 +1,170 @@
+---
+import { Image } from 'astro:assets';
+import '../styles/base.css';
+import '../styles/build.css';
+import '../styles/theme.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import CalculationLinks from '../components/CalculationLinks.astro';
+import { t } from '../utils/i18n';
+import { sitePath } from '../utils/paths';
+
+const {
+    character,
+    characterSlug,
+    metadata,
+    lang,
+    locale,
+    builds = [],
+    defaultBuildSlug,
+} = Astro.props;
+const characterArtAlt = t(locale, 'ui', 'Character art alt').replace(
+    '{name}',
+    character,
+);
+const characterHeaderImage = metadata?.portrait ?? metadata?.image;
+const buildLabel = t(locale, 'ui', 'Builds', undefined, false);
+const bestRoleLabel = t(locale, 'ui', 'Best Role');
+---
+
+<html lang={lang}>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width" />
+        <title>Star Rail Builds - {character}</title>
+        <link rel="icon" type="image/webp" href={sitePath('favicon.webp')} />
+    </head>
+
+    <body data-element={Astro.props.element}>
+        <!-- The header needs the URL slug, not the localized display name. -->
+        <Header locale={locale} lang={lang} character={characterSlug} />
+        <div class="page character-page">
+            <div class="character-page-layout">
+                <aside
+                    class="character-header"
+                    aria-labelledby="character-title"
+                >
+                    {
+                        characterHeaderImage && (
+                            <div class="character-art-stage">
+                                <Image
+                                    class="character-image"
+                                    src={characterHeaderImage}
+                                    alt={characterArtAlt}
+                                    loading="eager"
+                                    decoding="async"
+                                    fetchpriority="high"
+                                    width={132}
+                                    height={132}
+                                    densities={[1, 2]}
+                                />
+                            </div>
+                        )
+                    }
+
+                    <div class="character-header-copy">
+                        <h1
+                            id="character-title"
+                            class="page-title"
+                            data-pagefind-body
+                        >
+                            {character}
+                        </h1>
+
+                        <div class="character-header-meta">
+                            {
+                                metadata?.last_updated && (
+                                    <div class="last-updated">
+                                        <span>
+                                            {t(locale, 'ui', 'Last Updated')}
+                                        </span>
+                                        <strong>
+                                            {t(locale, 'ui', 'Version')}{' '}
+                                            {metadata.last_updated}
+                                        </strong>
+                                    </div>
+                                )
+                            }
+                        </div>
+                    </div>
+
+                    {
+                        builds.length > 0 && (
+                            <nav class="build-switcher" aria-label={buildLabel}>
+                                {builds.map((build: any, index: number) => {
+                                    const isDefaultBuild =
+                                        build.slug === defaultBuildSlug ||
+                                        (!defaultBuildSlug && index === 0);
+
+                                    return (
+                                        <button
+                                            id={`build-tab-${build.slug}`}
+                                            class={`build-switcher-button${isDefaultBuild ? ' is-active' : ''}`}
+                                            type="button"
+                                            data-build-tab
+                                            data-id={build.slug}
+                                            aria-controls={`build-content-${build.slug}`}
+                                            aria-pressed={
+                                                isDefaultBuild
+                                                    ? 'true'
+                                                    : 'false'
+                                            }
+                                        >
+                                            <span class="build-switcher-name">
+                                                {build.name}
+                                            </span>
+                                            {build.isBest && (
+                                                <span class="build-badge">
+                                                    {bestRoleLabel}
+                                                </span>
+                                            )}
+                                        </button>
+                                    );
+                                })}
+                            </nav>
+                        )
+                    }
+
+                    {
+                        builds.length > 0 && (
+                            <div class="build-calculation-panels">
+                                {builds
+                                    .filter(
+                                        (build: any) => build.hasCalculations,
+                                    )
+                                    .map((build: any) => {
+                                        const isDefaultBuild =
+                                            build.slug === defaultBuildSlug;
+
+                                        return (
+                                            <div
+                                                class={`build-calculation-panel${isDefaultBuild ? ' is-active' : ''}`}
+                                                data-build-calculation-panel
+                                                data-id={build.slug}
+                                                hidden={!isDefaultBuild}
+                                                aria-hidden={
+                                                    isDefaultBuild
+                                                        ? 'false'
+                                                        : 'true'
+                                                }
+                                            >
+                                                <CalculationLinks
+                                                    buildNote={build.buildNote}
+                                                    locale={locale}
+                                                />
+                                            </div>
+                                        );
+                                    })}
+                            </div>
+                        )
+                    }
+                </aside>
+
+                <div class="character-main">
+                    <slot />
+                </div>
+            </div>
+        </div>
+        <Footer lang={lang} />
+    </body>
+</html>

@@ -1,0 +1,20 @@
+{
+    "main_stats": {
+        "sands": [
+            "def%",
+            "er"
+        ],
+        "goblet": [
+            "def%"
+        ],
+        "circlet": [
+            "def%",
+            {
+                "name": "cr",
+                "note": {
+                    "en": "[[note:cr-favo]]."
+                }
+            }
+        ]
+    }
+}

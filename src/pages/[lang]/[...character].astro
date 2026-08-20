@@ -1,0 +1,161 @@
+---
+import Weapon from '../../components/Weapon.astro';
+import Artifact from '../../components/Artifact.astro';
+import ArtifactStats from '../../components/ArtifactStats.astro';
+import Talent from '../../components/Talent.astro';
+import Notes from '../../components/Notes.astro';
+import CharacterPageLayout from '../../layouts/CharacterLayout.astro';
+import { getCharacterPageData } from '../../utils/character-page';
+import { t } from '../../utils/i18n';
+import { getCharacterStaticPaths } from '../../utils/routes';
+
+export const getStaticPaths = getCharacterStaticPaths;
+
+const { lang, character: characterPath } = Astro.params;
+// Server-side loader resolves content JSON into translated, display-ready data.
+const {
+  characterSlug,
+  characterName,
+  metadata,
+  element,
+  lang: currentLang,
+  locale,
+  builds,
+  warnings,
+} = getCharacterPageData({ lang, characterPath });
+
+const defaultBuildSlug =
+  builds.find((build) => build.isBest)?.slug ?? builds[0]?.slug;
+
+const calculationKeys = [
+  'artifact',
+  'artifacts',
+  'weapons',
+  'talent',
+  'talents',
+  'global',
+];
+
+const hasBuildCalculations = (buildNote: any) =>
+  calculationKeys.some((key) => {
+    const credits = Array.isArray(buildNote?.[key])
+      ? buildNote[key]
+      : [buildNote?.[key]];
+
+    return credits.some((credit) => credit?.author && credit?.link);
+  });
+
+const buildHasItemNotes = (notes: any) =>
+  [
+    notes?.weapons?.items,
+    notes?.artifacts?.sets,
+    notes?.artifacts?.mainstats,
+    notes?.artifacts?.substats,
+    notes?.talents?.items,
+  ].some((items) => Array.isArray(items) && items.length > 0);
+
+const noteMarkerExplanation = t(
+  locale,
+  'ui',
+  'Note marker explanation',
+  undefined,
+  false,
+);
+---
+
+<CharacterPageLayout
+  characterSlug={characterSlug}
+  character={characterName}
+  metadata={metadata}
+  element={element}
+  lang={currentLang}
+  locale={locale}
+  defaultBuildSlug={defaultBuildSlug}
+  builds={builds.map((build) => ({
+    slug: build.slug,
+    name: build.name,
+    isBest: build.isBest,
+    buildNote: build.buildNote,
+    hasCalculations: hasBuildCalculations(build.buildNote),
+  }))}
+>
+  <div class="character-builds-layout" data-default-build={defaultBuildSlug}>
+    <div class="build-list">
+      {
+        builds.map((build) => {
+          const buildContentId = `build-content-${build.slug}`;
+          const hasNoteMarkerHint = buildHasItemNotes(build.notes);
+          const isDefaultBuild = build.slug === defaultBuildSlug;
+
+          return (
+            <section
+              class={`build-card${isDefaultBuild ? ' open' : ''}`}
+              data-build-panel
+              data-id={build.slug}
+              id={buildContentId}
+              aria-hidden={isDefaultBuild ? 'false' : 'true'}
+              hidden={!isDefaultBuild}
+            >
+              <div class="build-content">
+                {hasNoteMarkerHint && (
+                  <div class="build-note-hint">
+                    <span class="note-marker-text" aria-hidden="true">
+                      ⓘ
+                    </span>
+                    <span>{noteMarkerExplanation}</span>
+                  </div>
+                )}
+
+                <div class="grid">
+                  {build.weapons && (
+                    <Weapon
+                      weapons={build.weapons}
+                      locale={locale}
+                      lang={currentLang}
+                    />
+                  )}
+                  {build.artifacts.sets && (
+                    <Artifact
+                      artifacts={build.artifacts}
+                      locale={locale}
+                      lang={currentLang}
+                    />
+                  )}
+                  {build.artifacts.mainstats && build.artifacts.substats && (
+                    <ArtifactStats
+                      artifacts={build.artifacts}
+                      locale={locale}
+                    />
+                  )}
+                  {build.talents && (
+                    <Talent talents={build.talents} locale={locale} />
+                  )}
+                </div>
+                <Notes
+                  notes={build.notes}
+                  buildNote={build.buildNote}
+                  locale={locale}
+                />
+              </div>
+            </section>
+          );
+        })
+      }
+    </div>
+  </div>
+</CharacterPageLayout>
+
+{
+  /* Forward missing translation warnings to the browser console for authors. */
+  import.meta.env.DEV && warnings.length > 0 ? (
+    <script
+      is:inline
+      set:html={`const warnings = ${JSON.stringify(warnings)}; warnings.forEach((warning) => console.warn(warning));`}
+    />
+  ) : null
+}
+
+<script>
+  import '../../scripts/build-selector';
+  import '../../scripts/info-popover';
+</script>

@@ -1,0 +1,20 @@
+---
+import SimplePageLayout from '../../layouts/SimplePageLayout.astro';
+import ChangelogContent from '../../components/ChangelogContent.astro';
+import { getLocale } from '../../utils/i18n';
+import { getLanguageStaticPaths } from '../../utils/routes';
+
+export const getStaticPaths = getLanguageStaticPaths;
+
+const lang = Astro.params.lang ?? 'en';
+const locale = getLocale(lang);
+---
+
+<SimplePageLayout
+  title="Changelog"
+  lang={lang}
+  locale={locale}
+  page="changelog"
+>
+  <ChangelogContent />
+</SimplePageLayout>

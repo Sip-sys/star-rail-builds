@@ -1,0 +1,151 @@
+---
+import { Image } from 'astro:assets';
+import { t } from '../utils/i18n';
+import { localizedPath } from '../utils/paths';
+
+const { characters, lang, locale } = Astro.props;
+
+const characterCountLabel = t(locale, 'ui', 'Characters');
+const noResultsLabel = t(locale, 'ui', 'No characters found');
+const openBuildsLabel = t(locale, 'ui', 'Open builds');
+const resultsLabel = t(locale, 'ui', 'Results');
+const releaseDateLabel = t(locale, 'ui', 'Release date');
+const newestLabel = t(locale, 'ui', 'Newest');
+const latestUpdateLabel = t(locale, 'ui', 'Last Updated');
+const characterPortraitAltTemplate = t(locale, 'ui', 'Character portrait alt');
+const sortByLabel = t(locale, 'ui', 'Sort by');
+const sortOptions = [
+    { value: 'release', label: `${releaseDateLabel} - ${newestLabel}` },
+    { value: 'updated', label: `${latestUpdateLabel} - ${newestLabel}` },
+    { value: 'name', label: `${characterCountLabel} - A-Z` },
+    { value: 'element', label: `${t(locale, 'ui', 'Element')} - A-Z` },
+    { value: 'rarity', label: `${t(locale, 'ui', 'Rarity')} - A-Z` },
+];
+
+function formatUiTemplate(template: string, name: string) {
+    return template.replace('{name}', name);
+}
+
+function getCharacterViewModel(character: any) {
+    const href = localizedPath(lang, character.slug);
+    const pathLabel = t(locale, 'path', character.path);
+    const rarityLabel = `${character.rarity}\u2605`;
+
+    return {
+        ...character,
+        href,
+        pathLabel,
+        rarityLabel,
+    };
+}
+
+const rosterCharacters: ReturnType<typeof getCharacterViewModel>[] =
+    characters.map(getCharacterViewModel);
+---
+
+<section class="home-roster">
+    <section class="roster-list-panel" aria-labelledby="character-roster-title">
+        <div class="roster-list-header">
+            <div>
+                <h2 id="character-roster-title">{characterCountLabel}</h2>
+                <p
+                    data-character-count
+                    data-results-label={resultsLabel}
+                    aria-live="polite"
+                >
+                    {characters.length}
+                    {resultsLabel}
+                </p>
+            </div>
+            <label class="roster-sort">
+                {sortByLabel}
+                <select
+                    class="home-native-select"
+                    name="sort"
+                    form="character-filters"
+                    aria-label={sortByLabel}
+                >
+                    {
+                        sortOptions.map((option) => (
+                            <option
+                                value={option.value}
+                                selected={option.value === 'element'}
+                            >
+                                {option.label}
+                            </option>
+                        ))
+                    }
+                </select>
+            </label>
+        </div>
+
+        <div class="roster-list" data-roster-list>
+            {
+                rosterCharacters.map((character) => {
+                    const portraitAlt = formatUiTemplate(
+                        characterPortraitAltTemplate,
+                        character.name,
+                    );
+
+                    return (
+                        <a
+                            class={`roster-character ${character.element}${character.isWip ? ' is-wip' : ''}`}
+                            href={character.isWip ? undefined : character.href}
+                            aria-label={
+                                character.isWip
+                                    ? `${character.name}, WIP`
+                                    : `${character.name}, ${character.pathLabel}. ${openBuildsLabel}`
+                            }
+                            aria-disabled={character.isWip ? 'true' : undefined}
+                            data-character-card
+                            data-element={character.element}
+                            data-last-updated={character.lastUpdated}
+                            data-name={character.name}
+                            data-recent-updated={
+                                character.isRecentlyUpdated ? 'true' : 'false'
+                            }
+                            data-rarity={character.rarity}
+                            data-rarity-label={character.rarityLabel}
+                            data-version-released={character.versionReleased}
+                            data-path={character.path}
+                        >
+                            <span class="roster-character-art">
+                                {character.portrait && (
+                                    <Image
+                                        src={character.portrait}
+                                        alt={portraitAlt}
+                                        loading="lazy"
+                                        decoding="async"
+                                        width={160}
+                                        height={160}
+                                        densities={[1, 2]}
+                                    />
+                                )}
+                            </span>
+
+                            <span
+                                class="roster-character-copy"
+                                aria-hidden="true"
+                            >
+                                <span class="roster-character-name">
+                                    {character.name}
+                                </span>
+                            </span>
+
+                            {character.lastUpdated && (
+                                <span
+                                    class="roster-character-updated"
+                                    aria-hidden="true"
+                                >
+                                    {character.lastUpdated}
+                                </span>
+                            )}
+                        </a>
+                    );
+                })
+            }
+        </div>
+
+        <p class="roster-empty" data-character-empty hidden>{noResultsLabel}</p>
+    </section>
+</section>

@@ -1,0 +1,27 @@
+{
+    "weapons": [
+        {
+            "items": [
+                "favonius-warbow"
+            ]
+        },
+        {
+            "items": [
+                "elegy-for-the-end"
+            ]
+        },
+        {
+            "items": [
+                {
+                    "name": "rainbow-serpents-rain-bow",
+                    "refinement": 5
+                }
+            ]
+        },
+        {
+            "items": [
+                "snare-hook"
+            ]
+        }
+    ]
+}

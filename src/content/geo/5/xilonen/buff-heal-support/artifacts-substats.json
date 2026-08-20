@@ -1,0 +1,18 @@
+{
+    "substats_priority": [
+        {
+            "name": "er",
+            "note": {
+                "en": "[[note:er-req]]."
+            }
+        },
+        "def%",
+        "def",
+        {
+            "name": "cr",
+            "note": {
+                "en": "[[note:cr-favo]]."
+            }
+        }
+    ]
+}

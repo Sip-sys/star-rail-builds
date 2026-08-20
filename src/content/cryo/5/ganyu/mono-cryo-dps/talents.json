@@ -1,0 +1,22 @@
+{
+    "talents": [
+        {
+            "approx": true,
+            "items": [
+                {
+                    "name": "na"
+                },
+                {
+                    "name": "burst"
+                }
+            ]
+        },
+        {
+            "items": [
+                {
+                    "name": "skill"
+                }
+            ]
+        }
+    ]
+}

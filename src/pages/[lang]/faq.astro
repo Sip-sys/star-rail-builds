@@ -1,0 +1,21 @@
+---
+import SimplePageLayout from '../../layouts/SimplePageLayout.astro';
+import FAQContent from '../../components/FAQContent.astro';
+import { getLocale, t } from '../../utils/i18n';
+import { getLanguageStaticPaths } from '../../utils/routes';
+
+export const getStaticPaths = getLanguageStaticPaths;
+
+const lang = Astro.params.lang ?? 'en';
+const locale = getLocale(lang);
+---
+
+<SimplePageLayout
+  title={t(locale, 'ui', 'FAQ')}
+  lang={lang}
+  locale={locale}
+  page="faq"
+  showTitle={false}
+>
+  <FAQContent lang={lang} locale={locale} />
+</SimplePageLayout>

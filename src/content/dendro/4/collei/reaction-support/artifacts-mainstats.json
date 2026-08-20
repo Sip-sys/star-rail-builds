@@ -1,0 +1,34 @@
+{
+    "main_stats": {
+        "sands": [
+            {
+                "name": "er"
+            },
+            {
+                "name": "atk%"
+            },
+            {
+                "name": "em"
+            }
+        ],
+        "goblet": [
+            {
+                "name": "dendro-dmg"
+            },
+            {
+                "name": "em"
+            }
+        ],
+        "circlet": [
+            {
+                "name": "cr"
+            },
+            {
+                "name": "cd"
+            },
+            {
+                "name": "em"
+            }
+        ]
+    }
+}

@@ -1,0 +1,24 @@
+{
+    "weapons": [
+        {
+            "items": [
+                "elegy-for-the-end"
+            ]
+        },
+        {
+            "items": [
+                "favonius-warbow"
+            ]
+        },
+        {
+            "items": [
+                "sacrificial-bow"
+            ]
+        },
+        {
+            "items": [
+                "the-viridescent-hunt"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,17 @@
+{
+  "talents": [
+    {
+      "items": [
+        {
+          "name": "burst"
+        }      ]
+    },
+    {
+      "items": [
+        {
+          "name": "skill"
+        }
+      ]
+    }
+    ]
+}

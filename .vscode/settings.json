@@ -1,0 +1,9 @@
+{
+    "editor.formatOnSave": true,
+    "files.autoSave": "afterDelay",
+    "editor.detectIndentation": false,
+    "editor.tabSize": 4,
+    "[astro]": {
+        "editor.formatOnSave": true
+    }
+}

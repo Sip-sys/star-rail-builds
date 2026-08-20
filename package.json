@@ -1,0 +1,33 @@
+{
+    "name": "genshin-builds",
+    "type": "module",
+    "version": "0.0.1",
+    "engines": {
+        "node": ">=22.12.0"
+    },
+    "scripts": {
+        "dev": "astro dev",
+        "build": "node scripts/check-duplicate-json-keys.mjs && astro build",
+        "preview": "astro preview",
+        "astro": "astro",
+        "download:artifact-assets": "node scripts/download-assets.mjs artifact",
+        "download:weapon-assets": "node scripts/download-assets.mjs weapon",
+        "project:plan": "node scripts/sync-build-project.mjs --print-plan",
+        "project:sync": "node scripts/sync-build-project.mjs --dry-run",
+        "project:sync:apply": "node scripts/sync-build-project.mjs --apply"
+    },
+    "dependencies": {
+        "astro": "^7.2.0",
+        "astro-pagefind": "^2.0.1",
+        "marked": "^18.0.3",
+        "sass": "^1.102.0",
+        "typescript": "^7.0.2",
+        "webcoreui": "^1.5.0"
+    },
+    "devDependencies": {
+        "@types/node": "^25.6.2",
+        "jsonc-parser": "^3.3.1",
+        "prettier": "^3.8.3",
+        "prettier-plugin-astro": "^0.14.1"
+    }
+}

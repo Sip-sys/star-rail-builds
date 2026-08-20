@@ -1,0 +1,13 @@
+{
+    "substats_priority": [
+        "er",
+        "atk%",
+        "em",
+        {
+            "name": "cr",
+            "note": {
+                "en": "[[note:cr-favo]]."
+            }
+        }
+    ]
+}

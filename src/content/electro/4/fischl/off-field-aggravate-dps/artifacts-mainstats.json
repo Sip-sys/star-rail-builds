@@ -1,0 +1,25 @@
+{
+    "main_stats": {
+        "sands": [
+            {
+                "name": "atk%"
+            },
+            {
+                "name": "em"
+            }
+        ],
+        "goblet": [
+            {
+                "name": "electro-dmg"
+            }
+        ],
+        "circlet": [
+            {
+                "name": "cr"
+            },
+            {
+                "name": "cd"
+            }
+        ]
+    }
+}

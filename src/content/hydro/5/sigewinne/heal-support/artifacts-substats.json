@@ -1,0 +1,12 @@
+{
+    "substats_priority": [
+        "hp%",
+        "hp",
+        {
+            "name": "cr",
+            "note": {
+                "en": "[[note:cr-favo]]."
+            }
+        }
+    ]
+}
