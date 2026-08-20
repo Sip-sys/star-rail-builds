@@ -1,7 +1,15 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { readJSONFile } from './content';
-
+const HSR_ELEMENTS = new Set([
+  'physical',
+  'fire',
+  'ice',
+  'lightning',
+  'wind',
+  'quantum',
+  'imaginary',
+]);
 export type ContentCharacter = {
   element: string;
   rarity: string;
@@ -18,7 +26,11 @@ export function getContentCharacters(
 
   return fs
     .readdirSync(contentPath, { withFileTypes: true })
-    .filter((entry) => entry.isDirectory() && entry.name !== 'site')
+    .filter(
+    (entry) =>
+        entry.isDirectory() &&
+        HSR_ELEMENTS.has(entry.name),
+    )
     .flatMap((element) =>
       fs
         .readdirSync(path.join(contentPath, element.name), {

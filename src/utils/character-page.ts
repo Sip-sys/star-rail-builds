@@ -567,7 +567,7 @@ function buildLocalizedNotes(
             ? {
                 ...credit,
                 detail: translator.translateNoteText(credit.detail, sourceFile, {
-                    weaponPopovers: true,
+                    lightConePopovers: true,
                     artifactPopovers: true,
                     rotationPopovers: true,
                 }),
@@ -604,7 +604,7 @@ function buildLocalizedNotes(
 
             return renderMarkdown(
                 translator.translateNoteText(note[lang] ?? note.en, sourceFile, {
-                    weaponPopovers: true,
+                    lightConePopovers: true,
                     artifactPopovers: true,
                     rotationPopovers: true,
                 }),

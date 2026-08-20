@@ -1,19 +1,18 @@
 import { formatMissingTranslationWarning, t } from './i18n';
 import translationAliases from '../data/translation-aliases.json';
 import {
-    formatWeaponPassive,
-    type WeaponPassiveText,
-    type WeaponPassiveValue,
-} from './weapon-passive';
-import { getWeaponSource } from './weapon-source';
+    formatLightConePassive,
+    type LightConePassiveText,
+    type LightConePassiveValue,
+} from './light-cone-passive';
+
 import {
     resolveArtifactAssetUrl,
-    resolveWeaponAssetUrlById,
+    resolveLightConeAssetUrlById,
 } from './item-assets';
 
 type TranslationCategory =
     | 'artifact'
-    | 'weapon'
     | 'lightcone'
     | 'character'
     | 'stat'
@@ -21,11 +20,14 @@ type TranslationCategory =
     | 'path'
     | 'ability'
     | 'note';
-type InlineTranslationCategory = TranslationCategory | 'set';
+
+type InlineTranslationCategory =
+    | TranslationCategory
+    | 'set'
+    | 'weapon';
 
 const CATEGORIES: TranslationCategory[] = [
     'artifact',
-    'weapon',
     'lightcone',
     'character',
     'stat',
@@ -35,45 +37,25 @@ const CATEGORIES: TranslationCategory[] = [
     'note'
 ];
 
-type SharedWeaponData = {
+type SharedLightConeData = {
     rarity: number;
     source?: string;
-    passive?: WeaponPassiveText;
 
-    // Old Genshin refinement data — temporary
-    r1?: WeaponPassiveValue[];
-    r2?: WeaponPassiveValue[];
-    r3?: WeaponPassiveValue[];
-    r4?: WeaponPassiveValue[];
-    r5?: WeaponPassiveValue[];
+    passive?: LightConePassiveText;
 
-    // HSR Superimposition data
-    s1?: WeaponPassiveValue[];
-    s2?: WeaponPassiveValue[];
-    s3?: WeaponPassiveValue[];
-    s4?: WeaponPassiveValue[];
-    s5?: WeaponPassiveValue[];
-
-    // Old Genshin field — temporary
-    substat?: string;
+    s1?: LightConePassiveValue[];
+    s2?: LightConePassiveValue[];
+    s3?: LightConePassiveValue[];
+    s4?: LightConePassiveValue[];
+    s5?: LightConePassiveValue[];
 
     level_1?: {
-        // Old Genshin fields — temporary
-        base_attack?: number;
-        substat_value?: string;
-
-        // HSR Light Cone fields
         hp?: number;
         atk?: number;
         def?: number;
     };
 
     level_max?: {
-        // Old Genshin fields — temporary
-        base_attack?: number;
-        substat_value?: string;
-
-        // HSR Light Cone fields
         hp?: number;
         atk?: number;
         def?: number;
@@ -93,7 +75,7 @@ type SharedArtifactSetData = {
 };
 
 type TranslateNoteTextOptions = {
-    weaponPopovers?: boolean;
+    lightConePopovers?: boolean;
     artifactPopovers?: boolean;
     rotationPopovers?: boolean;
 };
@@ -140,11 +122,15 @@ function escapeHtml(value: unknown) {
 /**
  * Formats weapon stat values as level 1 / max when both are available.
  */
-function formatWeaponStatValue(
+function formatLightConeStatValue(
     level1Value?: number | string,
     levelMaxValue?: number | string,
 ) {
-    if (level1Value === undefined || level1Value === null || level1Value === '') {
+    if (
+        level1Value === undefined ||
+        level1Value === null ||
+        level1Value === ''
+    ) {
         return '';
     }
 
@@ -162,12 +148,24 @@ function formatWeaponStatValue(
 /**
  * Translates a weapon source enum while falling back to the stored value.
  */
-function translateWeaponSource(locale: any, source?: string) {
-    const sourceName = getWeaponSource(source);
-    const translationKey = `Weapon source ${sourceName}`;
-    const translatedSource = t(locale, 'ui', translationKey, undefined, false);
+function translateLightConeSource(locale: any, source?: string) {
+    if (!source) {
+        return '';
+    }
 
-    return translatedSource === translationKey ? sourceName : translatedSource;
+    const translationKey = `Light Cone source ${source}`;
+
+    const translatedSource = t(
+        locale,
+        'ui',
+        translationKey,
+        undefined,
+        false,
+    );
+
+    return translatedSource === translationKey
+        ? source
+        : translatedSource;
 }
 
 /**
@@ -193,7 +191,7 @@ export class TranslationHelper {
      */
     constructor(
         private locale: any,
-        private weaponDataById: Record<string, SharedWeaponData> = {},
+        private lightConeDataById: Record<string, SharedLightConeData> = {},
         private lang = 'en',
         private artifactSetDataById: Record<string, SharedArtifactSetData> = {},
     ) { }
@@ -379,8 +377,15 @@ export class TranslationHelper {
 
             const displayName = displayLabel || translation;
 
-            if (translationCategory === 'weapon' && options.weaponPopovers) {
-                return this.renderWeaponPopover(canonicalId, translation, displayName);
+            if (
+                translationCategory === 'lightcone' &&
+                options.lightConePopovers
+            ) {
+                return this.renderLightConePopover(
+                    canonicalId,
+                    translation,
+                    displayName,
+                );
             }
 
             if (translationCategory === 'artifact' && options.artifactPopovers) {
@@ -400,8 +405,18 @@ export class TranslationHelper {
     /**
      * Maps inline token category aliases to real translation dictionaries.
      */
-    private toTranslationCategory(category: InlineTranslationCategory) {
-        return category === 'set' ? 'artifact' : category;
+    private toTranslationCategory(
+        category: InlineTranslationCategory,
+    ): TranslationCategory {
+        if (category === 'set') {
+            return 'artifact';
+        }
+
+        if (category === 'weapon') {
+            return 'lightcone';
+        }
+
+        return category;
     }
 
     /**
@@ -416,71 +431,101 @@ export class TranslationHelper {
     /**
      * Builds the inline HTML for a weapon translation token popover.
      */
-    private renderWeaponPopover(id: string, name: string, label = name) {
-        const info = this.weaponDataById[id];
+    /**
+ * Builds the inline HTML for a Light Cone translation token popover.
+ */
+    private renderLightConePopover(
+        id: string,
+        name: string,
+        label = name,
+    ) {
+        const info = this.lightConeDataById[id];
 
         if (!info) {
             return escapeHtml(label);
         }
 
-        const baseAttackValue = formatWeaponStatValue(
-            info.level_1?.base_attack,
-            info.level_max?.base_attack,
+        const hpValue = formatLightConeStatValue(
+            info.level_1?.hp,
+            info.level_max?.hp,
         );
-        const substatValue = formatWeaponStatValue(
-            info.level_1?.substat_value,
-            info.level_max?.substat_value,
+
+        const atkValue = formatLightConeStatValue(
+            info.level_1?.atk,
+            info.level_max?.atk,
         );
-        const refinements = [1, 2, 3, 4, 5] as const;
-        const refinementButtons = refinements
-            .map((refinement) =>
+
+        const defValue = formatLightConeStatValue(
+            info.level_1?.def,
+            info.level_max?.def,
+        );
+
+        const superimpositions = [1, 2, 3, 4, 5] as const;
+
+        const superimpositionButtons = superimpositions
+            .map((superimposition) =>
                 [
-                    '<button class="weapon-popover-refinement-button" type="button" data-refinement="r',
-                    refinement,
-                    '" aria-selected="',
-                    refinement === 1 ? 'true' : 'false',
-                    '">R',
-                    refinement,
+                    '<button ',
+                    'class="weapon-popover-refinement-button" ',
+                    'type="button" ',
+                    'data-refinement="s',
+                    superimposition,
+                    '" ',
+                    'aria-pressed="',
+                    superimposition === 1 ? 'true' : 'false',
+                    '">',
+                    'S',
+                    superimposition,
                     '</button>',
                 ].join(''),
             )
             .join('');
-        const passivePanels = refinements
-            .map((refinement) =>
+
+        const passivePanels = superimpositions
+            .map((superimposition) =>
                 [
-                    '<span class="weapon-popover-passive-refinement" data-refinement-panel="r',
-                    refinement,
+                    '<span ',
+                    'class="weapon-popover-passive-refinement" ',
+                    'data-refinement-panel="s',
+                    superimposition,
                     '"',
-                    refinement === 1 ? '' : ' hidden',
+                    superimposition === 1 ? '' : ' hidden',
                     '>',
-                    formatWeaponPassive(info, refinement, this.lang),
+                    formatLightConePassive(
+                        info,
+                        superimposition,
+                        this.lang,
+                    ),
                     '</span>',
                 ].join(''),
             )
             .join('');
-        const substatName = info.substat
-            ? t(this.locale, 'stat', info.substat, undefined, false)
-            : '';
-        const substatRow = substatName
-            ? [
-                '<span class="info-popover-stat"><span>',
-                escapeHtml(substatName),
-                '</span><strong>',
-                escapeHtml(substatValue),
-                '</strong></span>',
-            ].join('')
-            : '';
-        const sourceName = translateWeaponSource(this.locale, info.source);
+
+        const sourceName = translateLightConeSource(
+            this.locale,
+            info.source,
+        );
+
         const sourceFooter = sourceName
             ? [
                 '<span class="weapon-popover-source"><span>',
-                escapeHtml(t(this.locale, 'ui', 'Source', undefined, false)),
+                escapeHtml(
+                    t(
+                        this.locale,
+                        'ui',
+                        'Source',
+                        undefined,
+                        false,
+                    ),
+                ),
                 '</span><strong>',
                 escapeHtml(sourceName),
                 '</strong></span>',
             ].join('')
             : '';
-        const imageUrl = resolveWeaponAssetUrlById(id);
+
+        const imageUrl = resolveLightConeAssetUrlById(id);
+
         const imageMarkup = imageUrl
             ? [
                 '<span class="info-popover-image weapon-popover-image"><img src="',
@@ -488,28 +533,44 @@ export class TranslationHelper {
                 '" alt="" loading="lazy" decoding="async"></span>',
             ].join('')
             : '';
+
         const cardHtml = [
             '<span class="info-popover-header',
             imageUrl ? ' has-image' : '',
             '">',
+
             imageMarkup,
+
             '<span class="info-popover-name">',
             escapeHtml(name),
             '</span>',
+
             '<span class="info-popover-rarity">',
             escapeHtml(info.rarity),
-            ' \u2605</span>',
+            ' ★</span>',
+
             '</span>',
-            '<span class="info-popover-stat"><span>Base ATK</span><strong>',
-            escapeHtml(baseAttackValue),
+
+            '<span class="info-popover-stat"><span>HP</span><strong>',
+            escapeHtml(hpValue),
             '</strong></span>',
-            substatRow,
+
+            '<span class="info-popover-stat"><span>ATK</span><strong>',
+            escapeHtml(atkValue),
+            '</strong></span>',
+
+            '<span class="info-popover-stat"><span>DEF</span><strong>',
+            escapeHtml(defValue),
+            '</strong></span>',
+
             '<span class="weapon-popover-refinement">',
-            refinementButtons,
+            superimpositionButtons,
             '</span>',
+
             '<span class="weapon-popover-passive">',
             passivePanels,
             '</span>',
+
             sourceFooter,
         ].join('');
 
