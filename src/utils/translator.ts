@@ -14,9 +14,11 @@ import {
 type TranslationCategory =
     | 'artifact'
     | 'weapon'
+    | 'lightcone'
     | 'character'
     | 'stat'
     | 'element'
+    | 'path'
     | 'ability'
     | 'note';
 type InlineTranslationCategory = TranslationCategory | 'set';
@@ -24,9 +26,11 @@ type InlineTranslationCategory = TranslationCategory | 'set';
 const CATEGORIES: TranslationCategory[] = [
     'artifact',
     'weapon',
+    'lightcone',
     'character',
     'stat',
     'element',
+    'path',
     'ability',
     'note'
 ];
@@ -35,19 +39,44 @@ type SharedWeaponData = {
     rarity: number;
     source?: string;
     passive?: WeaponPassiveText;
+
+    // Old Genshin refinement data — temporary
     r1?: WeaponPassiveValue[];
     r2?: WeaponPassiveValue[];
     r3?: WeaponPassiveValue[];
     r4?: WeaponPassiveValue[];
     r5?: WeaponPassiveValue[];
+
+    // HSR Superimposition data
+    s1?: WeaponPassiveValue[];
+    s2?: WeaponPassiveValue[];
+    s3?: WeaponPassiveValue[];
+    s4?: WeaponPassiveValue[];
+    s5?: WeaponPassiveValue[];
+
+    // Old Genshin field — temporary
     substat?: string;
-    level_max?: {
-        base_attack?: number;
-        substat_value?: string;
-    };
+
     level_1?: {
+        // Old Genshin fields — temporary
         base_attack?: number;
         substat_value?: string;
+
+        // HSR Light Cone fields
+        hp?: number;
+        atk?: number;
+        def?: number;
+    };
+
+    level_max?: {
+        // Old Genshin fields — temporary
+        base_attack?: number;
+        substat_value?: string;
+
+        // HSR Light Cone fields
+        hp?: number;
+        atk?: number;
+        def?: number;
     };
 };
 
@@ -76,7 +105,7 @@ type TranslationAliasCategory = Partial<
 const aliases = translationAliases as TranslationAliasCategory;
 
 const INLINE_TRANSLATION_TOKEN_PATTERN =
-    /\[\[(?:(set|weapon|character|stat|element|ability|note):)?([a-z0-9%/-]+)(?:\|([^\]\n]+))?\]\]/g;
+    /\[\[(?:(set|weapon|lightcone|character|stat|element|path|ability|note):)?([a-z0-9%/-]+)(?:\|([^\]\n]+))?\]\]/g;
 const ROTATION_POPOVER_INTRO_ID = 'Rotation notation intro';
 const ROTATION_POPOVER_NUMBER_INTRO_ID = 'Rotation notation number intro';
 const ROTATION_POPOVER_EXAMPLE_ID = 'Rotation notation example';

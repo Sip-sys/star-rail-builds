@@ -11,16 +11,18 @@ type LocaleBundle = {
     path: LocaleCategory;
     ui: LocaleCategory;
     note: LocaleCategory;
+    lightcone: LocaleCategory;
 };
 
 const localeFiles = {
     weapon: 'weapons',
     artifact: 'artifact-sets',
+    lightcone: 'light-cones',
     character: 'characters',
     stat: 'stats',
     element: 'elements',
-    ability: 'abilities',
     path: 'paths',
+    ability: 'abilities',
     ui: 'ui',
     note: 'notes',
 } as const satisfies Record<keyof LocaleBundle, string>;

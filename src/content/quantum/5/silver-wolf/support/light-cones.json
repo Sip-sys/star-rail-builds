@@ -1,0 +1,12 @@
+{
+    "weapons": [
+        {
+            "items": [
+                {
+                    "name": "incessant-rain",
+                    "superimposition": 1
+                }
+            ]
+        }
+    ]
+}

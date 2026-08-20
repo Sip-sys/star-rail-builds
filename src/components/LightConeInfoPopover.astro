@@ -1,0 +1,194 @@
+---
+import InlineNoteLabel from './InlineNoteLabel.astro';
+
+import {
+    formatLightConePassive,
+    type LightConePassiveText,
+    type LightConePassiveValue,
+} from '../utils/light-cone-passive';
+
+type LightConeInfo = {
+    rarity: number;
+
+    passive?: LightConePassiveText;
+
+    s1?: LightConePassiveValue[];
+    s2?: LightConePassiveValue[];
+    s3?: LightConePassiveValue[];
+    s4?: LightConePassiveValue[];
+    s5?: LightConePassiveValue[];
+
+    level_1?: {
+        hp?: number;
+        atk?: number;
+        def?: number;
+    };
+
+    level_max?: {
+        hp?: number;
+        atk?: number;
+        def?: number;
+    };
+};
+
+type Props = {
+    locale: any;
+    lang?: string;
+
+    lightCone: {
+        id?: string;
+        name: string;
+        rarity: number;
+        info?: LightConeInfo;
+    };
+};
+
+const { lightCone, lang = 'en' } = Astro.props as Props;
+
+const info = lightCone.info;
+
+const superimpositions = [1, 2, 3, 4, 5] as const;
+
+function escapeHtml(value: unknown) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+const passivePanels = info
+    ? superimpositions.map((superimposition) => ({
+          superimposition,
+          html: formatLightConePassive(info, superimposition, lang),
+      }))
+    : [];
+
+const formatLightConeStatValue = (
+    level1Value?: number | string,
+    levelMaxValue?: number | string,
+) => {
+    if (
+        level1Value === undefined ||
+        level1Value === null ||
+        level1Value === ''
+    ) {
+        return '';
+    }
+
+    if (
+        levelMaxValue === undefined ||
+        levelMaxValue === null ||
+        levelMaxValue === ''
+    ) {
+        return String(level1Value);
+    }
+
+    return `${level1Value} / ${levelMaxValue}`;
+};
+
+const hpValue = formatLightConeStatValue(
+    info?.level_1?.hp,
+    info?.level_max?.hp,
+);
+
+const atkValue = formatLightConeStatValue(
+    info?.level_1?.atk,
+    info?.level_max?.atk,
+);
+
+const defValue = formatLightConeStatValue(
+    info?.level_1?.def,
+    info?.level_max?.def,
+);
+
+const popoverCardHtml = info
+    ? [
+          '<span class="info-popover-header">',
+          '<span class="info-popover-name">',
+          escapeHtml(lightCone.name),
+          '</span>',
+
+          '<span class="info-popover-rarity">',
+          escapeHtml(info.rarity),
+          ' ★',
+          '</span>',
+          '</span>',
+
+          '<span class="info-popover-stat">',
+          '<span>HP</span>',
+          '<strong>',
+          escapeHtml(hpValue),
+          '</strong>',
+          '</span>',
+
+          '<span class="info-popover-stat">',
+          '<span>ATK</span>',
+          '<strong>',
+          escapeHtml(atkValue),
+          '</strong>',
+          '</span>',
+
+          '<span class="info-popover-stat">',
+          '<span>DEF</span>',
+          '<strong>',
+          escapeHtml(defValue),
+          '</strong>',
+          '</span>',
+
+          '<span class="weapon-popover-refinement">',
+          superimpositions
+              .map((superimposition) =>
+                  [
+                      '<button ',
+                      'class="weapon-popover-refinement-button" ',
+                      'type="button" ',
+                      'data-refinement="s',
+                      superimposition,
+                      '" ',
+                      'aria-pressed="',
+                      superimposition === 1 ? 'true' : 'false',
+                      '">',
+                      'S',
+                      superimposition,
+                      '</button>',
+                  ].join(''),
+              )
+              .join(''),
+          '</span>',
+
+          '<span class="weapon-popover-passive">',
+          passivePanels
+              .map(({ superimposition, html }) =>
+                  [
+                      '<span ',
+                      'class="weapon-popover-passive-refinement" ',
+                      'data-refinement-panel="s',
+                      superimposition,
+                      '"',
+                      superimposition === 1 ? '' : ' hidden',
+                      '>',
+                      html,
+                      '</span>',
+                  ].join(''),
+              )
+              .join(''),
+          '</span>',
+      ].join('')
+    : '';
+---
+
+<span
+    class="info-popover weapon-popover"
+    data-info-popover-html={info ? popoverCardHtml : undefined}
+>
+    <span
+        class="info-popover-trigger"
+        role="button"
+        tabindex="0"
+        aria-expanded="false"
+    >
+        <InlineNoteLabel label={lightCone.name} />
+    </span>
+</span>
